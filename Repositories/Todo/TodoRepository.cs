@@ -68,6 +68,19 @@ public class TodoRepository : ITodoRepository
             throw new Exception("Erro ao tentar atualizar todo");
         }
     }
+    public async Task UpdateAsync(Models.Todo todo, UpdateTodoVM vm)
+    {
+        try
+        {
+            todo.Description = vm.Description;
+            todo.Title = vm.Title;
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new Exception("Erro ao tentar atualizar todo.");
+        }
+    }
     public async Task DeleteAsync(Models.Todo todo)
     {
         try

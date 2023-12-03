@@ -83,4 +83,23 @@ public class TodoController : ControllerBase
             return StatusCode(500, new ResponseVM<string>("Erro ao tentar remover todo"));
         }
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateAsync([FromBody] UpdateTodoVM vm, [FromRoute] int id)
+    {
+        try
+        {
+            var todo = await _repository.GetByIdAsync(id);
+            await _repository.UpdateAsync(todo, vm);
+            return Ok(new ResponseVM<dynamic>(new { message = "Todo atualizado com sucesso" }));
+        }
+        catch (NotFoundException)
+        {
+            return NotFound(new ResponseVM<string>("Todo não encontrado no sistema"));
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }
