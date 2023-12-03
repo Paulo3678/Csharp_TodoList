@@ -13,6 +13,7 @@ public class TodoController : ControllerBase
     private readonly ITodoRepository _repository;
     public TodoController(ITodoRepository repository) => _repository = repository;
 
+    [HttpPost]
     public async Task<IActionResult> Create(CreateTodoVM vm)
     {
         try
@@ -22,9 +23,31 @@ public class TodoController : ControllerBase
         }
         catch (Exception)
         {
-            throw;
             return StatusCode(500, new ResponseVM<string>("Erro ao tentar criar todo"));
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll(
+        [FromQuery] int page = 0,
+        [FromQuery] int perPage = 10
+    )
+    {
+        try
+        {
+            var todos = await _repository.GetAsync(page, perPage);
+            return Ok(new ResponseVM<List<Todo>>(todos));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new ResponseVM<string>("Erro ao tentar buscar todos"));
+        }
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> UpdateDoneStatus(int id)
+    {
+        return Ok();
     }
 
 }
