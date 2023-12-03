@@ -45,7 +45,7 @@ namespace TodoList.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Todo");
+                    b.ToTable("Todos");
                 });
 #pragma warning restore 612, 618
         }

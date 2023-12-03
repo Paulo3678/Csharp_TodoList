@@ -11,7 +11,7 @@ using TodoList.Data;
 namespace TodoList.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231202222026_CreateDatabase")]
+    [Migration("20231203001107_CreateDatabase")]
     partial class CreateDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,7 +47,7 @@ namespace TodoList.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Todo");
+                    b.ToTable("Todos");
                 });
 #pragma warning restore 612, 618
         }
