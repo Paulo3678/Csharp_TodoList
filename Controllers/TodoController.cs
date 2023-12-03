@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TodoList.Exceptions;
 using TodoList.Models;
 using TodoList.Repositories.Todo;
 using TodoList.ViewModels;
@@ -14,7 +15,7 @@ public class TodoController : ControllerBase
     public TodoController(ITodoRepository repository) => _repository = repository;
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateTodoVM vm)
+    public async Task<IActionResult> CreateAsync(CreateTodoVM vm)
     {
         try
         {
@@ -28,7 +29,7 @@ public class TodoController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll(
+    public async Task<IActionResult> GetAllAsync(
         [FromQuery] int page = 0,
         [FromQuery] int perPage = 10
     )
@@ -44,10 +45,24 @@ public class TodoController : ControllerBase
         }
     }
 
-    [HttpPatch("{id}")]
-    public async Task<IActionResult> UpdateDoneStatus(int id)
+    [HttpPatch("{id}/done")]
+    public async Task<IActionResult> UpdateDoneStatusAsync([FromRoute] int id)
     {
-        return Ok();
+        try
+        {
+            var todo = await _repository.GetByIdAsync(id);
+            await _repository.UpdateDoneStatusAsync(todo);
+
+            return Ok(new ResponseVM<dynamic>(new { message = "Todo atualizado com sucesso" }));
+        }
+        catch (NotFoundException)
+        {
+            return NotFound(new ResponseVM<string>("Todo não encontrado no sistema"));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new ResponseVM<string>("Erro ao tentar atualizar todo"));
+        }
     }
 
 }

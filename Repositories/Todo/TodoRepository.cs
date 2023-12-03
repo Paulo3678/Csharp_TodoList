@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TodoList.Data;
+using TodoList.Exceptions;
 using TodoList.ViewModels.Todo;
 
 namespace TodoList.Repositories.Todo;
@@ -35,6 +36,36 @@ public class TodoRepository : ITodoRepository
         catch (Exception)
         {
             throw new Exception("Erro ao tentar buscar todos");
+        }
+    }
+    public async Task<Models.Todo> GetByIdAsync(int id)
+    {
+        try
+        {
+            var todo = await _context.Todos.FirstOrDefaultAsync(x => x.Id == id);
+            if (todo == null) throw new NotFoundException("Todo não encontrado", null);
+
+            return todo;
+        }
+        catch (NotFoundException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            throw new Exception("Erro ao tentar buscar todo");
+        }
+    }
+    public async Task UpdateDoneStatusAsync(Models.Todo todo)
+    {
+        try
+        {
+            todo.Done = !todo.Done;
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new Exception("Erro ao tentar atualizar todo");
         }
     }
 }
