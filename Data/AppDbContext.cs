@@ -7,6 +7,11 @@ namespace TodoList.Data;
 public class AppDbContext : DbContext
 {
     public DbSet<Todo> Todos { get; set; }
+
+    public AppDbContext(DbContextOptions options): base(options)
+    {
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
        => optionsBuilder.UseSqlServer("Server=localhost,1433;Database=TodoList;User ID=sa;Password=1q2w3e4r@#$;TrustServerCertificate=true");
     protected override void OnModelCreating(ModelBuilder modelBuilder)
