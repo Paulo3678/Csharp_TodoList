@@ -68,4 +68,16 @@ public class TodoRepository : ITodoRepository
             throw new Exception("Erro ao tentar atualizar todo");
         }
     }
+    public async Task DeleteAsync(Models.Todo todo)
+    {
+        try
+        {
+            _context.Todos.Remove(todo);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new Exception("Erro ao tentar remover todo");
+        }
+    }
 }

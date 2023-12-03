@@ -65,4 +65,22 @@ public class TodoController : ControllerBase
         }
     }
 
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        try
+        {
+            var todo = await _repository.GetByIdAsync(id);
+            await _repository.DeleteAsync(todo);
+            return Ok(new ResponseVM<dynamic>(new { message = "Todo removido com sucesso" }));
+        }
+        catch (NotFoundException)
+        {
+            return NotFound(new ResponseVM<string>("Todo não encontrado no sistema"));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new ResponseVM<string>("Erro ao tentar remover todo"));
+        }
+    }
 }
